@@ -1,5 +1,5 @@
 from pygame import *
-from random import choice
+from random import choice, randint
 class GameSprite(sprite.Sprite):
     def __init__(self,img,x,y,w,h,speed):
         super().__init__()
@@ -37,7 +37,7 @@ class Ball(GameSprite):
         self.rect.x +=self.speed_x*self.speed
         self.rect.y +=self.speed_y*self.speed
     def check_direction(self):
-        global score_l, score_r,player_l, player_r, jebspeed
+        global score_l, score_r,player_l, player_r, jebspeed, bombom
         if self.rect.y <=5:
             self.speed_y*=-1
         elif self.rect.y>=495-self.rect.height:
@@ -45,9 +45,11 @@ class Ball(GameSprite):
         elif self.rect.colliderect(player_l.rect):
             self.speed_x*=-1
             jebspeed-=1
+            bombom -= 1
         elif self.rect.colliderect(player_r.rect):
             self.speed_x*=-1
             jebspeed-= 1
+            bombom -=1
         elif self.rect.x <=0:
             score_r += 1
             self.rect.x = 350-self.rect.w/2
@@ -60,6 +62,14 @@ class Ball(GameSprite):
             self.rect.y = 250-self.rect.h/2
             self.set_direction(choice([-1,1]), choice([-1,1]))
             self.speed = 2
+class Bomba():
+    def __init__(self,img,x,y,w,h):
+        self.image = transform.scale(image.load(img), (w,h))
+        self.rect.x = x
+        self.rect.y = y
+        self.rect.w = w
+        self.rect.h = h
+
 font.init()
 font1 = font.SysFont('Arial', 36)
 direction = [-1,1]
@@ -72,6 +82,7 @@ FPS = 60
 score_l = 0
 score_r = 0
 jebspeed = 5
+bombom = 10
 left_win = font1.render('Левый участник выиграл!:)',1,(255,255,255))
 right_win = font1.render('Правый участник выиграл!:)',1,(255,255,255))
 nexti = 60
@@ -102,19 +113,26 @@ while game == True:
         if jebspeed < 1:
             ball.speed +=1
             jebspeed = 5
+        if bombom == 0:
+            bomba = Bomba('unnamed.png',randint(200,500),randint(100,400),50,50)
+            bomba.reset()
+            
+        # if bombom == 0:
+        #     bomba = GameSprite('unnamed.png', randint(100))
         if score_l > 4:
             window.blit(left_win,(150,150))
             finish = False
         elif score_r > 4:
             window.blit(right_win,(150,150))
             finish = False
-        for i in range(60):
-            nexti -= 0.0000040
-            for i in range(60):
-                nexti -= 0.00001
+
+        # for i in range(60):
+        #     nexti -= 0.40
+        #     for i in range(60):
+        #         nexti -= 0.00001
                 
-        time_finish = font1.render('До конца игры:'+str(nexti),1,(255,255,255))
-        window.blit(time_finish,(120,10))
+        # time_finish = font1.render('До конца игры:'+str(nexti),1,(255,255,255))
+        # window.blit(time_finish,(120,10))
         
             
         display.update()
