@@ -74,7 +74,7 @@ score_r = 0
 jebspeed = 5
 left_win = font1.render('Левый участник выиграл!:)',1,(255,255,255))
 right_win = font1.render('Правый участник выиграл!:)',1,(255,255,255))
-
+nexti = 60
 finish = True
 
 ball.set_direction(choice(direction), choice(direction))
@@ -102,12 +102,20 @@ while game == True:
         if jebspeed < 1:
             ball.speed +=1
             jebspeed = 5
-        if score_l > 0:
+        if score_l > 4:
             window.blit(left_win,(150,150))
             finish = False
         elif score_r > 4:
-            window.blit(right_win,(1500,150))
+            window.blit(right_win,(150,150))
             finish = False
-
+        for i in range(60):
+            nexti -= 0.0000040
+            for i in range(60):
+                nexti -= 0.00001
+                
+        time_finish = font1.render('До конца игры:'+str(nexti),1,(255,255,255))
+        window.blit(time_finish,(120,10))
+        
+            
         display.update()
         clock.tick(FPS)
